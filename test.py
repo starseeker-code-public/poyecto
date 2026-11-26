@@ -1,40 +1,45 @@
 from database import *
 from datetime import datetime
+import unittest
+import pathlib
 
-# Tests de clase Task
 
-# Create + Read
+# Setup
+class TestTarea(unittest.TestCase):
+    def setUp(self):
+        Task.create("Tarea 1")
+        Task("Tarea 2", completed=True).save()
 
-Task.create("Tarea 1")
-Task("Tarea 2", completed=True).save()
-total = Task.all()
+    def test_crear(self):
+        total = Task.all()
+        self.assertEqual(len(total), 2)
+        self.assertEqual(total[0].description, "Tarea 1")
+        self.assertEqual(total[1].description, "Tarea 2")
+        self.assertFalse(total[0].completed)
+        self.assertTrue(total[1].completed)
+        self.assertGreater(total[0].created_at, datetime(2026, 11, 25))
 
-assert len(total) == 2
-assert total[0].description == "Tarea 1"
-assert total[1].description == "Tarea 2"
-assert total[0].completed is False
-assert total[1].completed is True
-assert total[0].created_at > datetime(2026, 11, 25)
+    def test_modificar(self):
+        tarea = Task.get(1)
+        tarea.description = "Tarea cambiada"
+        tarea.completed = True
+        tarea.save()
+        total = Task.all()
+        self.assertEqual(len(total), 2)
+        self.assertNotEqual(total[0].description, "Tarea 1")
+        self.assertEqual(total[0].description, "Tarea cambiada")
+        self.assertTrue(total[0].completed)
 
-# Update
+    def test_delete(self):
+        total = Task.all()
+        for tarea in total:
+            tarea.delete()
+        total = Task.all()
+        self.assertEqual(len(total), 0)
 
-tarea_1 = Task.get(1)
-tarea_1.description = "Tarea cambiada"
-tarea_1.completed = True
-tarea_1.save()
+    def tearDown(self):
+        ruta_db = pathlib.Path("tasks.db")
+        ruta_db.unlink()
 
-total = Task.all()
-assert len(total) == 2
-assert total[0].description != "Tarea 1"
-assert total[0].description == "Tarea cambiada"
-assert total[0].completed is True
-
-# Delete
-
-for tarea in total:
-    tarea.delete()
-total = Task.all()
-
-assert len(total) == 0
-
-# Limpieza
+if __name__ == '__main__':
+    unittest.main()
