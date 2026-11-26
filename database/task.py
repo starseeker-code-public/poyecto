@@ -1,5 +1,3 @@
-"""Task class: a thin object wrapper over the functions in database.db."""
-
 from datetime import datetime
 
 from . import db

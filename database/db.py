@@ -1,22 +1,12 @@
-"""Low-level SQLite functions for the `tasks` table.
-
-Every function opens its own short-lived connection, so there is no state to
-manage. The table is created automatically the first time it is needed.
-Rows are returned as plain dicts: {"id", "created_at", "completed", "description"}.
-"""
-
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
-# Default location: <project root>/tasks.db (next to main.py)
 DB_PATH = Path(__file__).resolve().parent.parent / "tasks.db"
 
 
 def set_db_path(path) -> None:
-    """Use a different sqlite file (handy for tests). ':memory:' is NOT
-    supported because every call opens a new connection; use a temp file."""
     global DB_PATH
     DB_PATH = Path(path)
 

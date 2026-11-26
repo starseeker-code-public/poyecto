@@ -1,23 +1,15 @@
 # Proyecto
 
-## Paquete de base de datos (`database/`)
+## Uso
 
-Persistencia en SQLite para tareas, abstraída tras una sencilla clase `Task`.
-Impórtala desde cualquier módulo de la raíz del proyecto (p. ej. `main.py`); no
-requiere configuración: el archivo de base de datos y la tabla se crean
-automáticamente en el primer uso.
+```shell
+python main.py
 
-Requiere Python 3.10+ (usa solo la biblioteca estándar).
-
-### Estructura
-
-| Archivo | Propósito |
-|---------|-----------|
-| `database/db.py` | Funciones de bajo nivel de SQLite (crear / leer / actualizar / eliminar). |
-| `database/task.py` | Clase `Task` que envuelve esas funciones en métodos. |
-| `database/__init__.py` | Expone la API pública para poder hacer `from database import ...`. |
-
-La base de datos se guarda en `tasks.db` en la raíz del proyecto (ignorado por git).
+# Para tests
+python tests.py
+# o
+python -m unittest test.py
+```
 
 ### Campos de Task
 
@@ -28,7 +20,7 @@ La base de datos se guarda en `tasks.db` en la raíz del proyecto (ignorado por 
 | `completed` | `bool` | Por defecto `False`. |
 | `description` | `str` | Texto obligatorio. |
 
-### Uso
+### Clase Task
 
 ```python
 from database import Task
@@ -86,5 +78,3 @@ import database
 database.set_db_path("other.db")   # llámalo antes que cualquier otra función de database
 ```
 
-`":memory:"` no está soportado, porque cada función abre su propia conexión;
-usa un archivo temporal para las pruebas.
